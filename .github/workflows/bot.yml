@@ -1,0 +1,30 @@
+name: neot-bot
+on:
+    schedule:
+        - cron: "*/5 * * * *"
+jobs:
+    neot-bot:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v5
+
+            - name: Setup nodejs
+              uses: actions/setup-node@v4
+              with: 
+                node-version: '22'
+                cache: 'npm'
+
+            - name: install
+              run: npm ci
+
+            - name: Install TypeScript globally
+              run: npm install typescript ts-node
+
+            - name: run bot
+              run: npx ts-node index.ts
+              env:
+                BOT_ACCOUNT: ${{secrets.BOT_ACCOUNT}}
+                BOT_PASSWORD: ${{secrets.BOT_PASSWORD}}
+
