@@ -63,13 +63,16 @@ async function login(pageArr: string[], arr: string[]) {
     for (let c = 0; c < 3; c++) {
         try {
             const browser = await puppeteer.launch({
-                headless: false,
                 args: [
                     "--no-sandbox",
                     "--disable-setuid-sandbox",
                 ],
-                defaultViewport: null,
-                devtools: true,
+                headless: true,
+                // ! TEST START-------------------------
+                // headless: false,
+                // defaultViewport: null,
+                // devtools: true,
+                // ! TEST END  -------------------------
             });
             const page = await browser.newPage();
             await browser.defaultBrowserContext().overridePermissions("https://backrooms-neo-t-wiki.wikidot.com", []);
@@ -155,6 +158,7 @@ async function login(pageArr: string[], arr: string[]) {
                             await np2.click(
                                 'input[onclick="WIKIDOT.modules.RenamePageModule.listeners.rename(event)"]',
                             );
+                            await np2.waitForNavigation();
                             await np2.close();
                         }
                         gt.push(g[1]);
