@@ -1,7 +1,7 @@
 name: neot-bot
 on:
     schedule:
-        - cron: "0/5 * * * *"
+        - cron: "0/10 * * * *"
     workflow_dispatch:
     repository_dispatch:
         types: [abcdefg]
@@ -24,7 +24,7 @@ jobs:
               run: npm ci
 
             - name: Install TypeScript globally
-              run: npm install typescript ts-node
+              run: npm install --save-dev typescript ts-node
 
             - name: run bot
               run: npx ts-node index.ts
