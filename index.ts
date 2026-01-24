@@ -110,7 +110,7 @@ async function login(pageArr: string[], arr: string[]) {
                     let t = (
                         await (await v!.getProperty("textContent")).jsonValue()
                     ).trim();
-                    if (t === "职员帖：删除宣告" || t === "职员帖:删除宣告") {
+                    if (t === "职员帖：删除宣告" || t === '职员帖：长期低分删除宣告') {
                         //? -------------------------------------------------
                         let hI = await v.evaluate((el) =>
                             el.hasAttribute("id"),
