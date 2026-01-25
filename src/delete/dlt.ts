@@ -94,8 +94,6 @@ async function login(pageArr: string[], arr: string[]) {
             await page.click('button.btn.btn-primary.btn-lg[type="submit"]');
             await page.waitForNavigation();
             await sleep(10);
-            let gt = [];
-            let id = [];
             for (let href = 0; href < arr.length; href++) {
                 const np1 = await browser.newPage();
                 await np1.goto(
@@ -142,7 +140,8 @@ async function login(pageArr: string[], arr: string[]) {
                             const np2 = await browser.newPage();
                             await np2.goto(
                                 `https://backrooms-neo-t-wiki.wikidot.com${pageArr[href]}`,{
-                                    timeout: 100000
+                                    timeout: 100000,
+                                    waitUntil:'networkidle0',
                                 },
                             );
                             await np2.click("#more-options-button");
@@ -161,8 +160,6 @@ async function login(pageArr: string[], arr: string[]) {
                             await np2.waitForNavigation();
                             await np2.close();
                         }
-                        gt.push(g[1]);
-                        id.push(idn);
                     }
                 }
                 await np1.close();

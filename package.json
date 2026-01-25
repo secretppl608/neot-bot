@@ -1,27 +1,32 @@
 {
-  "name": "neot-bot",
-  "version": "0.1.0",
-  "description": "a neot bot",
-  "license": "MIT",
-  "author": "olysad",
-  "type": "module",
-  "main": "index.ts",
-  "scripts": {
-    "test": "npx ts-node index.ts"
-  },
-  "devDependencies": {
-    "ts-node": "^10.9.2",
-    "typescript": "^5.9.3"
-  },
-  "dependencies": {
-    "@ukwhatn/wikidot": "^4.3.1",
-    "axios": "^1.13.2",
-    "cheerio": "^1.1.2",
-    "dotenv": "^17.2.3",
-    "puppeteer": "^24.35.0",
-    "puppeteer-extra": "^3.3.6",
-    "puppeteer-extra-plugin-anonymize-ua": "^2.4.6",
-    "puppeteer-extra-plugin-stealth": "^2.11.2",
-    "tesseract.js": "^7.0.0"
-  }
+    "name": "neot-bot",
+    "version": "0.1.0",
+    "description": "a neot bot",
+    "license": "MIT",
+    "author": "olysad",
+    "type": "module",
+    "main": "index.ts",
+    "scripts": {
+        "lt": "ts-node -r tsconfig-paths/register --files ./src/post/lt.ts",
+        "cd": "ts-node -r tsconfig-paths/register --files ./src/post/cd.ts",
+        "rt": "ts-node -r tsconfig-paths/register --files ./src/post/rt.ts",
+        "rs": "ts-node -r tsconfig-paths/register --files ./src/post/rs.ts"
+    },
+    "devDependencies": {
+        "ts-node": "^10.9.2",
+        "tsconfig-paths": "^4.2.0",
+        "typescript": "^5.9.3"
+    },
+    "dependencies": {
+        "@ukwhatn/wikidot": "^4.3.1",
+        "axios": "^1.13.2",
+        "cheerio": "^1.1.2",
+        "date-fns": "^4.1.0",
+        "dotenv": "^17.2.3",
+        "puppeteer": "^24.35.0",
+        "puppeteer-extra": "^3.3.6",
+        "puppeteer-extra-plugin-anonymize-ua": "^2.4.6",
+        "puppeteer-extra-plugin-stealth": "^2.11.2",
+        "tesseract.js": "^7.0.0"
+    }
 }

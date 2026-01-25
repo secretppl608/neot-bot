@@ -26,17 +26,16 @@ jobs:
 
             - name: run post
               run: |
-                npx ts-node lt.ts &&
-                npx ts-node cd.ts &&
-                npx ts-node rt.ts &&
-                npx ts-node rw.ts &&
-                npx ts-node so.ts
+                npm run lt &&
+                npm run cd &&
+                npm run rt &&
+                npm run rs
               env:
                 BOT_ACCOUNT: ${{secrets.BOT_ACCOUNT}}
                 BOT_PASSWORD: ${{secrets.BOT_PASSWORD}}
 
             - name: run bot
-              run: npx ts-node index.ts
+              run: npx ts-node ./src/delete/dlt.ts
               env:
                 BOT_ACCOUNT: ${{secrets.BOT_ACCOUNT}}
                 BOT_PASSWORD: ${{secrets.BOT_PASSWORD}}
