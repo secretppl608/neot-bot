@@ -1,5 +1,5 @@
 import "dotenv/config";
-import { config, sleep, ax, str, login } from "../bot.config.ts";
+import { config, sleep, ax, str, login, postFind } from "../bot.config.ts";
 
 async function bot() {
     const { h, f } = await ax(6);
@@ -17,7 +17,9 @@ async function a(pageArr: string[], arr: string[]) {
             for (let n = 0; n < pageArr.length; n++) {
                 //具体逻辑
                 const np = await b.newPage();
-                await np.goto(str(pageArr[n]) as string, { waitUntil: 'networkidle0' });
+                await np.goto(str(pageArr[n]) as string, {
+                    waitUntil: "networkidle0",
+                });
                 await np.click("#tags-button");
                 await np.waitForSelector("#page-tags-input");
                 await np.evaluate(() => {
@@ -44,18 +46,46 @@ async function a(pageArr: string[], arr: string[]) {
                     await np.click("#discuss-button");
                     await np.waitForNavigation();
                 } else {
-                    await np.goto(str(arr[n]) as string, { waitUntil: "domcontentloaded" });
+                    await np.goto(str(arr[n]) as string, {
+                        waitUntil: "domcontentloaded",
+                    });
                 }
-                await np.click("#new-post-button");
-                await np.waitForSelector("#np-title");
-                await np.type("#np-title", "职员帖：长期低分删除宣告");
-                await np.type(
-                    "#np-text",
-                    `由于条目已发布1个月，且分数并未达到合格线以上，根据[[[/deletions-policy|删除政策]]]，据此宣告将于72小时后删除此条目\n[[iframe https://secretppl608.github.io/time.html?m=ld&t=null&g=${Date.now() + 72 * 60 * 60 * 1000} style="width:400px;display:block;height:120px;"]]\n此帖为职员帖，不应在此帖下回复，除非您并非原作者但希望重写，则可以在此帖下回复希望重写条目的意图，如果您是原作者并认为自己的心血不应被删除，可以联系职员评估是否应当得到豁免。`,
-                    { delay: 100 },
-                );
-                await np.click('#np-post');
-                await np.waitForNavigation();
+                const { s1, id, isF } = await postFind(np);
+                if (!isF) {
+                    await np.click("#new-post-button");
+                } else {
+                    await np.click(
+                        `${s1} a[onclick="togglePostOptions(event,${id})"]`,
+                    ); //wikidot你告诉我，为什么这里不用引号？？
+                    await np.waitForSelector(
+                        `a[onclick="WIKIDOT.modules.ForumViewThreadModule.listeners.editPost(event,'${id}')"]`,
+                    ); //这里有引号你是几个意思？？？尼玛的两个人写的代码吗？？
+                    await np.click(
+                        `a[onclick="WIKIDOT.modules.ForumViewThreadModule.listeners.editPost(event,'${id}')"]`,
+                    );
+                    await np.waitForSelector("#np-title");
+                    await np.evaluate(() => {
+                        (
+                            document.querySelector(
+                                "#np-title",
+                            ) as HTMLInputElement
+                        ).value = "";
+                        (
+                            document.querySelector(
+                                "#np-text",
+                            ) as HTMLInputElement
+                        ).value = "";
+                    });
+                    await np.waitForSelector("#np-title");
+                    await np.type("#np-title", "职员帖：长期低分删除宣告");
+                    await np.type(
+                        "#np-text",
+                        `由于条目已发布1个月，且分数并未达到合格线以上，根据[[[/deletions-policy|删除政策]]]，据此宣告将于72小时后删除此条目\n[[iframe https://secretppl608.github.io/time.html?m=ld&t=null&g=${Date.now() + 72 * 60 * 60 * 1000} style="width:400px;display:block;height:120px;"]]\n此帖为职员帖，不应在此帖下回复，除非您并非原作者但希望重写，则可以在此帖下回复希望重写条目的意图，如果您是原作者并认为自己的心血不应被删除，可以联系职员评估是否应当得到豁免。`,
+                        { delay: 100 },
+                    );
+                    await np.click("#np-post");
+                    await np.waitForNavigation();
+                }
                 await np.close();
             }
             await b.close();
