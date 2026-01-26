@@ -169,37 +169,66 @@ export async function login(test: boolean) {
  *
  * @description 返回的字符串：.post-container:has(#${str})
  */
-export async function postFind(np1: Page) {
+export async function postFind(np1: Page, title?: string|undefined) {
     const tb = await np1.$$(".post .title");
     for (let v of tb) {
         let t = (
             await (await v!.getProperty("textContent")).jsonValue()
         ).trim();
-        if (t === "职员帖：删除宣告" || t === "职员帖：长期低分删除宣告") {
-            //? -------------------------------------------------
-            let hI = await v.evaluate((el) => el.hasAttribute("id"));
-            if (!hI) {
-                await sleep(5);
+        if (title === undefined) {
+            if (t === "职员帖：删除宣告" || t === "职员帖：长期低分删除宣告") {
+                //? -------------------------------------------------
+                let hI = await v.evaluate((el) => el.hasAttribute("id"));
+                if (!hI) {
+                    await sleep(5);
+                    continue;
+                }
+                const postId = await np1.evaluate((el) => el.id, v);
+                //? --------------------------------------------------
+                let str = postId;
+                const selector = `.post-container:has(#${str})`;
+                //? ---------------------------------------------------
+                await sleep(10);
+                await np1.waitForSelector(`#${str}`, {
+                    timeout: 30000,
+                    visible: true,
+                });
+                const post = await np1.$(selector);
+                return {
+                    s1: selector,
+                    id: postId.split("-")[2],
+                    isF: true,
+                };
+            } else {
                 continue;
             }
-            const postId = await np1.evaluate((el) => el.id, v);
-            //? --------------------------------------------------
-            let str = postId;
-            const selector = `.post-container:has(#${str})`;
-            //? ---------------------------------------------------
-            await sleep(10);
-            await np1.waitForSelector(`#${str}`, {
-                timeout: 30000,
-                visible: true,
-            });
-            const post = await np1.$(selector);
-            return {
-                s1: selector,
-                id: postId.split("-")[2],
-                isF: true,
-            };
         } else {
-            continue;
+            if (t === title) {
+                //? -------------------------------------------------
+                let hI = await v.evaluate((el) => el.hasAttribute("id"));
+                if (!hI) {
+                    await sleep(5);
+                    continue;
+                }
+                const postId = await np1.evaluate((el) => el.id, v);
+                //? --------------------------------------------------
+                let str = postId;
+                const selector = `.post-container:has(#${str})`;
+                //? ---------------------------------------------------
+                await sleep(10);
+                await np1.waitForSelector(`#${str}`, {
+                    timeout: 30000,
+                    visible: true,
+                });
+                const post = await np1.$(selector);
+                return {
+                    s1: selector,
+                    id: postId.split("-")[2],
+                    isF: true,
+                };
+            } else {
+                continue;
+            }
         }
     }
     return {

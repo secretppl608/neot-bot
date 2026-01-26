@@ -102,6 +102,7 @@ async function a(pageArr: string[], arr: string[], m: string) {
                             ) as HTMLInputElement
                         ).click();
                     });
+                    await np.waitForNavigation();
                     await np.goto(str(arr[n]) as string, {
                         waitUntil: "domcontentloaded",
                     });
