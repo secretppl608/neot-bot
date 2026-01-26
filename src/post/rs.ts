@@ -47,6 +47,29 @@ async function a(pageArr: string[], arr: string[], i: number) {
                         );
                         await np.click("#np-post");
                         await np.waitForNavigation();
+                        const {
+                            s1: s2,
+                            id: id2,
+                            isF: isF2,
+                        } = await postFind(np);
+                        if (isF2) {
+                            await np.click(
+                                `${s2} a[onclick="togglePostOptions(event,${id2})"]`,
+                            );
+                            await np.waitForSelector(
+                                `a[onclick="WIKIDOT.modules.ForumViewThreadModule.listeners.deletePost(event,'${id2}')"]`,
+                            );
+                            await np.click(
+                                `a[onclick="WIKIDOT.modules.ForumViewThreadModule.listeners.deletePost(event,'${id2}')"]`,
+                            );
+                            await np.waitForSelector(
+                                `a[onclick="WIKIDOT.modules.ForumDeletePostModule.listeners.deletePost(event, ${id2})"]`,
+                            );
+                            await np.click(
+                                `a[onclick="WIKIDOT.modules.ForumDeletePostModule.listeners.deletePost(event, ${id2})"]`,
+                            );
+                            await np.waitForNavigation();
+                        }
                     } else {
                         const selector = `${s1} .content>p iframe`;
                         //? ---------------------------------------------------
