@@ -215,7 +215,7 @@ async function a(pageArr: string[], arr: string[], m: string) {
                         );
                         await np.waitForSelector("#np-title");
                         await np.evaluate(
-                            (md, gn) => {
+                            (md, gn, tn) => {
                                 const i = parseInt(md.slice(2, 3));
                                 if (
                                     (
@@ -229,7 +229,7 @@ async function a(pageArr: string[], arr: string[], m: string) {
                                             "#np-text",
                                         ) as HTMLInputElement
                                     ).value =
-                                        `由于条目已触达${i == 1 ? -2 : i == 2 ? -10 : -30}分的删除线，根据[[[/deletions-policy|删除政策]]]，据此宣告将${i == 1 ? "于72小时后" : i == 2 ? "于24小时后" : "立即"}删除此条目\n[[iframe https://secretppl608.github.io/time.html?m=cd&t=${i == 1 ? "f1" : i == 2 ? "f2" : "f3"}&g=${i == 1 ? gn.toString() : i == 2 ? (gn - 48 * 60 * 60 * 1000).toString() : (gn - 72 * 60 * 60 * 1000).toString()} style="width:400px;display:block;height:120px;"]]\n此帖为职员帖，不应在此帖下回复，除非您并非原作者但希望重写，则可以在此帖下回复希望重写条目的意图，如果您是原作者并认为自己的心血不应被删除，可以联系职员评估是否应当得到豁免。`;
+                                        `由于条目已触达${i == 1 ? -2 : i == 2 ? -10 : -30}分的删除线，根据[[[/deletions-policy|删除政策]]]，据此宣告将${i == 1 ? "于72小时后" : i == 2 ? "于24小时后" : "立即"}删除此条目\n[[iframe https://secretppl608.github.io/time.html?m=cd&t=${i == 1 ? "f1" : i == 2 ? "f2" : "f3"}&g=${i == 1 ? gn.toString() : i == 2 ? (tn == "f1" ? (gn - 48 * 60 * 60 * 1000).toString() : gn.toString()) : tn == "f1" ? (gn - 72 * 60 * 60 * 1000).toString() : tn == "f2" ? (gn - 24 * 60 * 60 * 1000).toString() : gn.toString()} style="width:400px;display:block;height:120px;"]]\n此帖为职员帖，不应在此帖下回复，除非您并非原作者但希望重写，则可以在此帖下回复希望重写条目的意图，如果您是原作者并认为自己的心血不应被删除，可以联系职员评估是否应当得到豁免。`;
                                 } else {
                                     (
                                         document.querySelector(
@@ -246,6 +246,7 @@ async function a(pageArr: string[], arr: string[], m: string) {
                             },
                             m,
                             g,
+                            t,
                         );
                         await np.click("#np-post");
                         await np.waitForNavigation();
