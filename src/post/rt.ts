@@ -180,7 +180,7 @@ async function a(pageArr: string[], arr: string[], m: string) {
                         await np.waitForNavigation();
                     } else {
                         await np.click('#np-cancel');
-                        await np.waitForNavigation();
+                        await sleep(1);
                     }
                     await sleep(2);
                     await np.close();
