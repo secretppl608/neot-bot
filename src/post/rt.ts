@@ -178,6 +178,9 @@ async function a(pageArr: string[], arr: string[], m: string) {
                     if (!t) {
                         await np.click("#np-post");
                         await np.waitForNavigation();
+                    } else {
+                        await np.click('#np-cancel');
+                        await np.waitForNavigation();
                     }
                     await sleep(2);
                     await np.close();
@@ -188,12 +191,12 @@ async function a(pageArr: string[], arr: string[], m: string) {
                     });
                     const { s1, id } = await postFind(np);
                     const src = await np.evaluate(
-                        () =>
+                        (s) =>
                             (
                                 document.querySelector(
-                                    `${s1} iframe`,
+                                    `${s} iframe`,
                                 ) as HTMLIFrameElement
-                            ).src,
+                            ).src,s1
                     );
                     let g1 = src.match(/&g=(?<gn>[^&\s]*)/);
                     let g = parseInt(g1?.groups?.gn ?? "");
