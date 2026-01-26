@@ -76,16 +76,16 @@ async function a(pageArr: string[], arr: string[]) {
                             ) as HTMLInputElement
                         ).value = "";
                     });
-                    await np.waitForSelector("#np-title");
-                    await np.type("#np-title", "职员帖：长期低分删除宣告");
-                    await np.type(
-                        "#np-text",
-                        `由于条目已发布1个月，且分数并未达到合格线以上，根据[[[/deletions-policy|删除政策]]]，据此宣告将于72小时后删除此条目\n[[iframe https://secretppl608.github.io/time.html?m=ld&t=null&g=${Date.now() + 72 * 60 * 60 * 1000} style="width:400px;display:block;height:120px;"]]\n此帖为职员帖，不应在此帖下回复，除非您并非原作者但希望重写，则可以在此帖下回复希望重写条目的意图，如果您是原作者并认为自己的心血不应被删除，可以联系职员评估是否应当得到豁免。`,
-                        { delay: 100 },
-                    );
-                    await np.click("#np-post");
-                    await np.waitForNavigation();
                 }
+                await np.waitForSelector("#np-title");
+                await np.type("#np-title", "职员帖：长期低分删除宣告");
+                await np.type(
+                    "#np-text",
+                    `由于条目已发布1个月，且分数并未达到合格线以上，根据[[[/deletions-policy|删除政策]]]，据此宣告将于72小时后删除此条目\n[[iframe https://secretppl608.github.io/time.html?m=ld&t=null&g=${Date.now() + 72 * 60 * 60 * 1000} style="width:400px;display:block;height:120px;"]]\n此帖为职员帖，不应在此帖下回复，除非您并非原作者但希望重写，则可以在此帖下回复希望重写条目的意图，如果您是原作者并认为自己的心血不应被删除，可以联系职员评估是否应当得到豁免。`,
+                    { delay: 100 },
+                );
+                await np.click("#np-post");
+                await np.waitForNavigation();
                 await np.close();
             }
             await b.close();
