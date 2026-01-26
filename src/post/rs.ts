@@ -85,7 +85,7 @@ async function a(pageArr: string[], arr: string[], i: number) {
                                     r.findIndex((e) => e == "重写中"),
                                     1,
                                 );
-                                t.value = /(^|\s)待删除(\s|$)/.test(t.value)
+                                t.value = /(^|\s)重写中(\s|$)/.test(t.value)
                                     ? r.join(" ")
                                     : t.value;
                             });
