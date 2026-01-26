@@ -144,6 +144,14 @@ async function a(pageArr: string[], arr: string[], m: string) {
                         `a[onclick="WIKIDOT.modules.ForumViewThreadModule.listeners.editPost(event,'${id}')"]`,
                     );
                     await np.waitForSelector("#np-title");
+                    const t = await np.evaluate(
+                        () =>
+                            (
+                                document.querySelector(
+                                    "#np-title",
+                                ) as HTMLInputElement
+                            ).value == "职员帖：长期低分删除宣告",
+                    );
                     await np.evaluate(() => {
                         if (
                             (
@@ -167,9 +175,11 @@ async function a(pageArr: string[], arr: string[], m: string) {
                                 `由于条目分数回升，但条目仍发布超一个月且未达到合格线，根据[[[/deletions-policy|删除政策]]]，据此宣告将于72小时后删除此条目\n[[iframe https://secretppl608.github.io/time.html?m=ld&t=null&g=${Date.now() + 72 * 60 * 60 * 1000} style="width:400px;display:block;height:120px;"]]\n此帖为职员帖，不应在此帖下回复，除非您并非原作者但希望重写，则可以在此帖下回复希望重写条目的意图，如果您是原作者并认为自己的心血不应被删除，可以联系职员评估是否应当得到豁免。`;
                         }
                     });
+                    if (!t) {
+                        await np.click("#np-post");
+                        await np.waitForNavigation();
+                    }
                     await sleep(2);
-                    await np.click("#np-post");
-                    await np.waitForNavigation();
                     await np.close();
                 } else if (m.startsWith("cd")) {
                     const np = await b.newPage();
@@ -177,62 +187,61 @@ async function a(pageArr: string[], arr: string[], m: string) {
                         waitUntil: "domcontentloaded",
                     });
                     const { s1, id } = await postFind(np);
-                    await np.click(
-                        `${s1} a[onclick="togglePostOptions(event,${id})"]`,
-                    );
-                    await np.waitForSelector(
-                        `a[onclick="WIKIDOT.modules.ForumViewThreadModule.listeners.editPost(event,'${id}')"]`,
-                    );
-                    await np.click(
-                        `a[onclick="WIKIDOT.modules.ForumViewThreadModule.listeners.editPost(event,'${id}')"]`,
-                    );
-                    await np.waitForSelector("#np-title");
-                    await np.evaluate((md) => {
-                        let f: string;
-                        const i = parseInt(md.slice(2, 3));
-                        let g = parseInt(
+                    const src = await np.evaluate(
+                        () =>
                             (
                                 document.querySelector(
-                                    "#np-text",
-                                ) as HTMLInputElement
-                            ).value.match(/&g=(.*)\s/)[0],
+                                    `${s1} iframe`,
+                                ) as HTMLIFrameElement
+                            ).src,
+                    );
+                    let g1 = src.match(/&g=(?<gn>[^&\s]*)/);
+                    let g = parseInt(g1?.groups?.gn ?? "");
+                    let t1 = src.match(/&t=(?<tn>[^&\s]*)/);
+                    let t = t1?.groups?.tn ?? "";
+                    if (`f${m.slice(2, 3)}` !== t) {
+                        await np.click(
+                            `${s1} a[onclick="togglePostOptions(event,${id})"]`,
                         );
-                        if (
-                            (
-                                document.querySelector(
-                                    "#np-title",
-                                ) as HTMLInputElement
-                            ).value == "职员帖：删除宣告"
-                        ) {
-                            f = (
-                                document.querySelector(
-                                    "#np-text",
-                                ) as HTMLInputElement
-                            ).value.match(/&t=(.*)&/)[0];
-                            (
-                                document.querySelector(
-                                    "#np-text",
-                                ) as HTMLInputElement
-                            ).value =
-                                `由于条目已触达${i == 1 ? -2 : i == 2 ? -10 : -30}分的删除线，根据[[[/deletions-policy|删除政策]]]，据此宣告将${i == 1 ? "于72小时后" : i == 2 ? "于24小时后" : "立即"}删除此条目\n[[iframe https://secretppl608.github.io/time.html?m=cd&t=${i == 1 ? "f1" : i == 2 ? "f2" : "f3"}&g=${i == 1 ? g : i == 2 ? g - 48 * 60 * 60 * 1000 : g - 72 * 60 * 60 * 1000} style="width:400px;display:block;height:120px;"]]\n此帖为职员帖，不应在此帖下回复，除非您并非原作者但希望重写，则可以在此帖下回复希望重写条目的意图，如果您是原作者并认为自己的心血不应被删除，可以联系职员评估是否应当得到豁免。`;
-                        } else {
-                            f = "f1";
-                            (
-                                document.querySelector(
-                                    "#np-title",
-                                ) as HTMLInputElement
-                            ).value = "职员帖：删除宣告";
-                            (
-                                document.querySelector(
-                                    "#np-text",
-                                ) as HTMLInputElement
-                            ).value =
-                                `由于条目已触达${i == 1 ? -2 : i == 2 ? -10 : -30}分的删除线，根据[[[/deletions-policy|删除政策]]]，据此宣告将${i == 1 ? "于72小时后" : i == 2 ? "于24小时后" : "立即"}删除此条目\n[[iframe https://secretppl608.github.io/time.html?m=cd&t=${i == 1 ? "f1" : i == 2 ? "f2" : "f3"}&g=${i == 1 ? g : i == 2 ? g - 48 * 60 * 60 * 1000 : g - 72 * 60 * 60 * 1000} style="width:400px;display:block;height:120px;"]]\n此帖为职员帖，不应在此帖下回复，除非您并非原作者但希望重写，则可以在此帖下回复希望重写条目的意图，如果您是原作者并认为自己的心血不应被删除，可以联系职员评估是否应当得到豁免。`;
-                        }
-                    }, m);
-                    await sleep(2);
-                    await np.click("#np-post");
-                    await np.waitForNavigation();
+                        await np.waitForSelector(
+                            `a[onclick="WIKIDOT.modules.ForumViewThreadModule.listeners.editPost(event,'${id}')"]`,
+                        );
+                        await np.click(
+                            `a[onclick="WIKIDOT.modules.ForumViewThreadModule.listeners.editPost(event,'${id}')"]`,
+                        );
+                        await np.waitForSelector("#np-title");
+                        await np.evaluate((md,gn) => {
+                            const i = parseInt(md.slice(2, 3));
+                            if (
+                                (
+                                    document.querySelector(
+                                        "#np-title",
+                                    ) as HTMLInputElement
+                                ).value == "职员帖：删除宣告"
+                            ) {
+                                (
+                                    document.querySelector(
+                                        "#np-text",
+                                    ) as HTMLInputElement
+                                ).value =
+                                    `由于条目已触达${i == 1 ? -2 : i == 2 ? -10 : -30}分的删除线，根据[[[/deletions-policy|删除政策]]]，据此宣告将${i == 1 ? "于72小时后" : i == 2 ? "于24小时后" : "立即"}删除此条目\n[[iframe https://secretppl608.github.io/time.html?m=cd&t=${i == 1 ? "f1" : i == 2 ? "f2" : "f3"}&g=${i == 1 ? gn.toString() : i == 2 ? (g - 48 * 60 * 60 * 1000).toString() : (g - 72 * 60 * 60 * 1000).toString()} style="width:400px;display:block;height:120px;"]]\n此帖为职员帖，不应在此帖下回复，除非您并非原作者但希望重写，则可以在此帖下回复希望重写条目的意图，如果您是原作者并认为自己的心血不应被删除，可以联系职员评估是否应当得到豁免。`;
+                            } else {
+                                (
+                                    document.querySelector(
+                                        "#np-title",
+                                    ) as HTMLInputElement
+                                ).value = "职员帖：删除宣告";
+                                (
+                                    document.querySelector(
+                                        "#np-text",
+                                    ) as HTMLInputElement
+                                ).value =
+                                    `由于条目已触达${i == 1 ? -2 : i == 2 ? -10 : -30}分的删除线，根据[[[/deletions-policy|删除政策]]]，据此宣告将${i == 1 ? "于72小时后" : i == 2 ? "于24小时后" : "立即"}删除此条目\n[[iframe https://secretppl608.github.io/time.html?m=cd&t=${i == 1 ? "f1" : i == 2 ? "f2" : "f3"}&g=${i == 1 ? gn.toString() : i == 2 ? (gn - 48 * 60 * 60 * 1000).toString() : (gn - 72 * 60 * 60 * 1000).toString()} style="width:400px;display:block;height:120px;"]]\n此帖为职员帖，不应在此帖下回复，除非您并非原作者但希望重写，则可以在此帖下回复希望重写条目的意图，如果您是原作者并认为自己的心血不应被删除，可以联系职员评估是否应当得到豁免。`;
+                            }
+                        }, m,g);
+                        await np.click("#np-post");
+                        await np.waitForNavigation();
+                    }
                     await np.close();
                 }
             }

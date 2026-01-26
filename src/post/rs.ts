@@ -70,6 +70,12 @@ async function a(pageArr: string[], arr: string[], i: number) {
                             await np.click(
                                 `a[onclick="WIKIDOT.modules.ForumViewThreadModule.listeners.deletePost(event,'${id}')"]`,
                             );
+                            await np.waitForSelector(
+                                `a[onclick="WIKIDOT.modules.ForumDeletePostModule.listeners.deletePost(event, ${id})"]`,
+                            );
+                            await np.click(
+                                `a[onclick="WIKIDOT.modules.ForumDeletePostModule.listeners.deletePost(event, ${id})"]`,
+                            );
                             await np.waitForNavigation();
                             await np.goto(pageArr[n], {
                                 waitUntil: "networkidle0",
