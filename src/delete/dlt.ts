@@ -1,60 +1,16 @@
-import axios from "axios";
-import * as cheerio from "cheerio";
-import { Client } from "@ukwhatn/wikidot";
 import puppeteer, { Dialog } from "puppeteer";
 import "dotenv/config";
+import {ax,set} from '../bot.config.ts'
 
 async function sleep(delay: number) {
     await new Promise((resolve) => setTimeout(resolve, delay * 1000));
 }
 
 async function bot() {
-    const authClientResult = await Client.create({
-        username: process.env.BOT_ACCOUNT,
-        password: process.env.BOT_PASSWORD,
-    });
-    if (!authClientResult.isOk()) {
-        throw new Error("登陆失败");
-    }
-    const authClient = authClientResult.value;
-    const siteResult = await authClient.site.get("backrooms-neo-t-wiki");
-    if (!siteResult.isOk()) {
-        throw new Error("Failed to retrieve site");
-    }
-    const site = siteResult.value;
-    const htmlContent = (
-        await axios.get("https://backrooms-neo-t-wiki.wikidot.com/status", {
-            headers: {
-                "User-Agent":
-                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-            },
-        })
-    ).data;
-    const $ = cheerio.load(htmlContent);
-    const signPageBox = $(
-        "div#wiki-tab-0-0 > .list-pages-box > table.wiki-content-table",
-    );
-    const aHrefCollage: string[] = [];
-    const aTextCollage: string[] = [];
-    const aForumCollage: (string | undefined)[] = [];
-    signPageBox.find("a").each(function (i, el) {
-        aHrefCollage.push(el.attribs.href);
-        aTextCollage.push($(this).text());
-    });
-    for (let h of aHrefCollage) {
-        let p = (
-            await axios.get(`https://backrooms-neo-t-wiki.wikidot.com${h}`, {
-                headers: {
-                    "User-Agent":
-                        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-                },
-            })
-        ).data;
-        const A = cheerio.load(p);
-        const discussBtn = A("a#discuss-button").attr("href");
-        aForumCollage.push(discussBtn);
-    }
-    await login(aHrefCollage, aForumCollage as string[]);
+    const {h:h0,f:f0} = await ax(0);
+    const {h:h1,f:f1} = await ax(4);//重写页面倒计时归零也不删除
+    const {h:h2,f:f2} = await ax(5);//豁免页面也是一样道理
+    await login(set(h0,set(h1,h2).union()).difference(),set(f0,set(f1,f2).union()).difference() as string[]);
 }
 
 bot();

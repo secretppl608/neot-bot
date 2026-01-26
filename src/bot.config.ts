@@ -17,13 +17,15 @@ export async function sleep(delay: number) {
 /**
  * @function
  * @param path - 带斜杠的页面路径
- * @param num - 请输入要生成的路径数量
  * @param mid - 请输入不带斜杠的中间路径
- * @example e.g. str('/abc',1,'def')==>r.t. 'https://backrooms-neo-t-wiki.wikidot.com/def/abc'
- * str(['/abc','def'],1,'def')==>r.t. ['https://backrooms-neo-t-wiki.wikidot.com/def/abc','https://backrooms-neo-t-wiki.wikidot.com/def/def']
- * @returns {string|string[]}
+ * @return {string[]|string}
+ * @example <caption>使用示例</caption>
+ * //str('/abc',1,'def')
+ * 'https://backrooms-neo-t-wiki.wikidot.com/def/abc'
+ * //str(['/abc','def'],1,'def')
+ * ['https://backrooms-neo-t-wiki.wikidot.com/def/abc','https://backrooms-neo-t-wiki.wikidot.com/def/def']
  */
-export function str(path: string | string[], mid?: string) {
+export function str(path: string | string[], mid?: string): string[] | string {
     const baseUrl = "https://backrooms-neo-t-wiki.wikidot.com";
     if (typeof path == "string") {
         if (!mid) {
@@ -126,7 +128,7 @@ export async function ax(tab: number, m?: "rt") {
 }
 
 export async function login(test: boolean) {
-    try{
+    try {
         let x = test ? { defaultViewport: null, devtools: true } : {};
         const browser = await puppeteer.launch({
             args: ["--no-sandbox", "--disable-setuid-sandbox"],
@@ -155,9 +157,9 @@ export async function login(test: boolean) {
             process.env.BOT_PASSWORD!,
         );
         await page.click('button.btn.btn-primary.btn-lg[type="submit"]');
-        await page.waitForNavigation();
+        await page.waitForNavigation({ timeout: 100000 });
         return { b: browser, p: page };
-    } catch(e){
+    } catch (e) {
         console.log(e);
         throw Error(e);
     }
@@ -192,7 +194,6 @@ export async function postFind(np1: Page) {
             });
             const post = await np1.$(selector);
             return {
-                p1: post,
                 s1: selector,
                 id: postId.split("-")[2],
                 isF: true,
@@ -203,5 +204,36 @@ export async function postFind(np1: Page) {
     }
     return {
         isF: false,
+    };
+}
+
+export function set(arr1: any[], arr2: any[]) {
+    const set1 = new Set(arr1);
+    const set2 = new Set(arr2);
+    return {
+        intersection() {
+            const result = [];
+            for (const item of set1) {
+                if (set2.has(item)) {
+                    result.push(item);
+                }
+            }
+            return result;
+        },
+        union() {
+            for (const item of set2) {
+                set1.add(item);
+            }
+            return Array.from(set1);
+        },
+        difference() {
+            const result = [];
+            for (const item of set1) {
+                if (!set2.has(item)) {
+                    result.push(item);
+                }
+            }
+            return result;
+        },
     };
 }
