@@ -187,9 +187,9 @@ async function a(pageArr: string[], arr: string[], m: string) {
                         `a[onclick="WIKIDOT.modules.ForumViewThreadModule.listeners.editPost(event,'${id}')"]`,
                     );
                     await np.waitForSelector("#np-title");
-                    await np.evaluate(() => {
+                    await np.evaluate((md) => {
                         let f: string;
-                        const i = parseInt(m.slice(2, 3));
+                        const i = parseInt(md.slice(2, 3));
                         let g = parseInt(
                             (
                                 document.querySelector(
