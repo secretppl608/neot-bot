@@ -19,19 +19,19 @@ async function a(pageArr: string[], arr: string[], i: number) {
             await sleep(10);
             for (let n = 0; n < pageArr.length; n++) {
                 //具体逻辑
-                if (i == 4) {
-                    const np = await b.newPage();
-                    await np.goto(str(pageArr[n]) as string, {
-                        waitUntil: "networkidle0",
+                const np = await b.newPage();
+                await np.goto(str(pageArr[n]) as string, {
+                    waitUntil: "networkidle0",
+                });
+                if (arr[n] === "javascript:;") {
+                    await np.click("#discuss-button");
+                    await np.waitForNavigation();
+                } else {
+                    await np.goto(str(arr[n]) as string, {
+                        waitUntil: "domcontentloaded",
                     });
-                    if (arr[n] === "javascript:;") {
-                        await np.click("#discuss-button");
-                        await np.waitForNavigation();
-                    } else {
-                        await np.goto(str(arr[n]) as string, {
-                            waitUntil: "domcontentloaded",
-                        });
-                    }
+                }
+                if (i == 4) {
                     const { isF, s1, id } = await postFind(
                         np,
                         "职员帖：条目重写中",
@@ -131,6 +131,25 @@ async function a(pageArr: string[], arr: string[], i: number) {
                     }
                     await np.close();
                 } else {
+                    const { s1: s2, id: id2, isF: isF2 } = await postFind(np);
+                    if (isF2) {
+                        await np.click(
+                            `${s2} a[onclick="togglePostOptions(event,${id2})"]`,
+                        );
+                        await np.waitForSelector(
+                            `a[onclick="WIKIDOT.modules.ForumViewThreadModule.listeners.deletePost(event,'${id2}')"]`,
+                        );
+                        await np.click(
+                            `a[onclick="WIKIDOT.modules.ForumViewThreadModule.listeners.deletePost(event,'${id2}')"]`,
+                        );
+                        await np.waitForSelector(
+                            `a[onclick="WIKIDOT.modules.ForumDeletePostModule.listeners.deletePost(event, ${id2})"]`,
+                        );
+                        await np.click(
+                            `a[onclick="WIKIDOT.modules.ForumDeletePostModule.listeners.deletePost(event, ${id2})"]`,
+                        );
+                        await np.waitForNavigation();
+                    }
                     return;
                 }
             }
