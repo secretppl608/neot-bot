@@ -150,7 +150,6 @@ async function a(pageArr: string[], arr: string[], i: number) {
                         );
                         await np.waitForNavigation();
                     }
-                    return;
                 }
             }
             await b.close();
